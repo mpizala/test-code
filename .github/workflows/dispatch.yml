@@ -1,18 +1,24 @@
-name: Dispatch to Test Pipeline
+name: Manual Workflow Trigger
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Git reference to use'
+        required: false
+        default: 'main'
+      sha:
+        description: 'Git SHA to use'
+        required: false
 
 jobs:
-  dispatch:
+  hello:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Repository Dispatch
-      uses: peter-evans/repository-dispatch@v3
-      with:
-        token: ${{ secrets.DISPATCH_TOKEN }}
-        repository: ${{ github.repository_owner }}/test-pipeline
-        event-type: test-code-push
-        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      
+      - name: Say Hello
+        run: echo "Hello World from workflow_dispatch"
