@@ -1,0 +1,19 @@
+name: Trigger pipeline repo
+
+on:
+  push:
+    branches:
+      - main # or the branch you want
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger pipeline repo workflow
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.DISPATCH_TOKEN }}" \
+            https://api.github.com/repos/mpizala/test-pipeline/actions/workflows/hello.yml/dispatches \
+            -d '{"ref":"main"}'
